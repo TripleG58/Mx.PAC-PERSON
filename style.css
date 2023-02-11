@@ -101,19 +101,14 @@ main {
     overflow: hidden;
   }
   main {
-    padding-top: calc(100vh - 128.5714vw);
-/*     background-position-y: calc(100vh - 128.5714vw); */
+    padding-top: calc(50vh - calc(128.5714vw / 2));
   }
   svg.map {
-    height: calc(100% - calc(100vh - 128.5714vw));
+    height: calc(100% - calc(50vh - calc(128.5714vw / 2)));
   }
-
-
-
-  
   .test {
-    top: calc(100vh - 128.5714vw);
-    height: calc(100vh - calc(100vh - 128.5714vw));
+    top: calc(50vh - calc(128.5714vw / 2));
+    height: calc(100% - calc(50vh - calc(128.5714vw / 2)));
   }
 }
 
