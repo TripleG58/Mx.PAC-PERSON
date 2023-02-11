@@ -107,6 +107,11 @@ function setupPellets() {
 // setupPellets();
 // ran once, then copied output HTML into index.html
 
+// will contain all future collisions' timer handles (to be cancelled if necessary)
+// this includes pellet collection, ghost death, ghost consume, wall collision, etc.
+// the queue should be ordered chronologically, but I guess it doesn't have to be
+let pacCollisionQueue = [];
+
 // @params current x, y, s=speed, d=direction: 'N','E','S','W'
 function pacDetectWallCollision(x, y, s, d) {
   // velocity = {speed(in grid spaces/sec), direction}
@@ -203,4 +208,5 @@ function pacDetectWallCollision(x, y, s, d) {
   style.innerHTML = animStyleStrArray.join("");
 }
 pacDetectWallCollision(26, 51, 12.5, 'W');
+
 
