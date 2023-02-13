@@ -1,3 +1,14 @@
+// HELPER METHODS // 
+// Shorten querySelector
+// usage: elem.querySelector(param) => qs(elem, param);
+function qs(elem, param) {return elem.querySelector(param);}
+// Shorten document.querySelector
+function dqs(param) {return document.querySelector(param);}
+// Shorten document.querySelectorAll
+function dqsa(param) {return document.querySelectorAll(param);}
+// sleep utility function
+function sleep(ms) {return new Promise(resolve=>setTimeout(resolve,ms));}
+
 
 // top-left index = 1,7 in test grid
 // have to access like, wallMap[y][x] 
@@ -113,11 +124,11 @@ function setupPellets() {
 let pacCollisionQueue = [];
 
 // @params current x, y, s=speed, d=direction: 'N','E','S','W'
-function pacDetectWallCollision(x, y, s, d) {
+async function pacDetectWallCollision(xi, yi, s, d) {
   // velocity = {speed(in grid spaces/sec), direction}
   let v = {s:  s, d: d};
   // pac-position
-  let p = {x: x, y: y};
+  let p = {x: xi, y: yi};
   // wallMap test-grid offset
   const WM_OFFSET_X = 1;
   const WM_OFFSET_Y = 7;
@@ -146,67 +157,120 @@ function pacDetectWallCollision(x, y, s, d) {
   ];
   animStyleStrArray[3] = p.x * 100;
   animStyleStrArray[5] = p.y * 100;
+  // keep in mind, the wallMap has 2 grid spaces per index!!!
   if      (v.d == 'W') {
     animStyleStrArray[7] = animStyleStrArray[13] = 180;
-    for(let i = p.x; i > (p.x - spacesUntilStop) || !collisionDetected; --i) {
-      // keep in mind, the wallMap has 2 grid spaces per index!!!
-      let x = Math.trunc((i - WM_OFFSET_X) / 2);
+    for(let i = p.x; i > (p.x - spacesUntilStop) && !collisionDetected; --i) {
+      let x = Math.trunc((i   - WM_OFFSET_X) / 2);
       let y = Math.trunc((p.y - WM_OFFSET_Y) / 2);
-      console.log(x,y);
-      console.log(wallMap);
-      if (wallMap[y][x] == 'W') {
+      if (wallMap[y][x] == 'W' || i < WM_OFFSET_X) {
         collisionDetected = true;
         spacesUntilStop = p.x - i + 1;
         animStyleStrArray[1]  = spacesUntilStop / v.s;
         animStyleStrArray[9]  = (i+1) * 100;
-        animStyleStrArray[11] = p.y * 100;
+        animStyleStrArray[11] = p.y   * 100;
       }
     }
   }
   else if (v.d == 'N') {
     animStyleStrArray[7] = animStyleStrArray[13] = -90;
-    for(let i = p.y; i > (p.y - spacesUntilStop) || !collisionDetected; --i) {
-      let x = Math.trunc(p.x / 2) - WM_OFFSET_X;
-      let y = Math.trunc(i / 2) - WM_OFFSET_Y;
-      if (wallMap[y][x] == 'W') {
+    for(let i = p.y; i > (p.y - spacesUntilStop) && !collisionDetected; --i) {
+      let x = Math.trunc((p.x - WM_OFFSET_X) / 2);
+      let y = Math.trunc((i   - WM_OFFSET_Y) / 2);
+      if (wallMap[y][x] == 'W' || i < WM_OFFSET_Y) {
         collisionDetected = true;
         spacesUntilStop = p.y - i + 1;
         animStyleStrArray[1]  = spacesUntilStop / v.s;
-        animStyleStrArray[9]  = p.x * 100;
+        animStyleStrArray[9]  = p.x   * 100;
         animStyleStrArray[11] = (i+1) * 100;
       }
     }
   }
   else if (v.d == 'E') {
     animStyleStrArray[7] = animStyleStrArray[13] = 0;
-    for(let i = p.y; i < (p.y + spacesUntilStop) || !collisionDetected; ++i) {
-      let x = Math.trunc(i / 2) - WM_OFFSET_X;
-      let y = Math.trunc(p.y / 2) - WM_OFFSET_Y;
-      if (wallMap[y][x] == 'W') {
+    for(let i = p.x; i < (p.x + spacesUntilStop) && !collisionDetected; ++i) {
+      let x = Math.trunc((i   - WM_OFFSET_X) / 2);
+      let y = Math.trunc((p.y - WM_OFFSET_Y) / 2);
+      if (wallMap[y][x] == 'W' || i+1 > 55) { // math should match 'S' case, but exploiting divisibility I guess? (not sure why this works) 
         collisionDetected = true;
-        spacesUntilStop = p.x + i - 1;
+        spacesUntilStop = i - p.x - 1 - 3; // 3 = pac-width
         animStyleStrArray[1]  = spacesUntilStop / v.s;
-        animStyleStrArray[9]  = (i-1) * 100;
+        animStyleStrArray[9]  = (i-1 - 3) * 100;
         animStyleStrArray[11] = p.y * 100;
       }
     }
   }
   else if (v.d == 'S') {
     animStyleStrArray[7] = animStyleStrArray[13] = 90;
-    for(let i = p.y; i < (p.y + spacesUntilStop) || !collisionDetected; ++i) {
-      let x = Math.trunc(p.x / 2) - WM_OFFSET_X;
-      let y = Math.trunc(i / 2) - WM_OFFSET_Y;
-      if (wallMap[y][x] == 'W') {
+    for(let i = p.y; !collisionDetected; ++i) {
+      let x = Math.trunc((p.x - WM_OFFSET_X) / 2);
+      let y = Math.trunc((i   - WM_OFFSET_Y) / 2);
+      console.log(y);
+      if (wallMap[y][x] == 'W' || i+3 > 66) {
         collisionDetected = true;
-        spacesUntilStop = p.y + i - 1;
+        spacesUntilStop = i - p.y - 1 - 3; // 3 = pac-height
+        if (i+3 > 66) spacesUntilStop = i - p.y - 1;
         animStyleStrArray[1]  = spacesUntilStop / v.s;
         animStyleStrArray[9]  = p.x * 100;
-        animStyleStrArray[11] = (i-1) * 100;
+        animStyleStrArray[11] = (i-1 - 3) * 100;
+        if (i+3 > 66) animStyleStrArray[11] = (i-1) * 100;
       }
     }
   }
+  // console.log(animStyleStrArray.join(""));
+  // document.querySelector('.pac').offsetHeight;
+  // document.querySelector('.pac').classList.add('resetAnimation');
+  document.querySelector('.pac').style.animationName = "none";
+  document.querySelector('.pac').style.animationDuration = "0s";
+  // await sleep(1);
   style.innerHTML = animStyleStrArray.join("");
+  // await sleep(1);
+  // document.querySelector('.pac').classList.remove('resetAnimation');
+  document.querySelector('.pac').offsetHeight; // trigger reflow after changing animation
+  document.querySelector('.pac').style.animationName = "";
+  document.querySelector('.pac').style.animationDuration = "";
 }
+let pac = document.querySelector('.pac');
+let animCounter = 1;
+
+let anims = 'WNESESWSESWNENWSESWS';
+pac.onanimationend = async e => {
+  let x = 0;
+  let y = 0;
+  let w = 0;
+  let h = 0;
+  let m = document.querySelector('main');
+  // get current coordinates from transform & grid conversion math
+  let matrix = window.getComputedStyle(e.target).transform;
+  matrix = matrix.match(/matrix.*\((.+)\)/)[1].split(', ');
+  x = matrix[4];
+  y = matrix[5];
+  // console.log(matrix);
+  w = m.offsetWidth; 
+  // FIXME: .offsetHeight causes reflow - could be cause of future performance issues
+  h = m.offsetHeight;
+  // console.log(w,h);
+  x = Math.round(x / w * 56);
+  y = Math.round(y / h * 72);
+  // console.log(x,y);
+  // document.querySelector('.pac').classList.add('resetAnimation');
+  // document.querySelector('.pac').offsetHeight;
+  // await sleep(3000);
+  // if      (animCounter == 0) pacDetectWallCollision(x, y, 12.5, 'N');
+  // else if (animCounter == 1) pacDetectWallCollision(x, y, 12.5, 'E');
+  // else if (animCounter == 2) pacDetectWallCollision(x, y, 12.5, 'S');
+  // else if (animCounter == 3) pacDetectWallCollision(x, y, 12.5, 'E');
+  // else if (animCounter == 4) pacDetectWallCollision(x, y, 12.5, 'S');
+  
+  if (animCounter < anims.length) {
+    pacDetectWallCollision(x, y, 12.5, anims[animCounter]);
+  }  
+  animCounter++;
+};
+
+
+
+// begin static demo animations //
 pacDetectWallCollision(26, 51, 12.5, 'W');
 
-
+// FIXME: figure out how to stop animation mid-way

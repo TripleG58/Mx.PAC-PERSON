@@ -1,10 +1,4 @@
-::-webkit-scrollbar {
-  background-color: black;
-/*   width: 0px; */
-}
-::-webkit-scrollbar-thumb {
-  background-color: #111;
-}
+
 html, body {
   height: 100%;
   width: 100%;
@@ -12,7 +6,6 @@ html, body {
 body {
   margin: 0;
   background-color: black;
-/*   overflow-y: scroll; */
 }
 main {
 /*  fixed position is to accommadate mobile address bar behavior  */
@@ -22,10 +15,7 @@ main {
   max-height: 100%;
   left: 50%;
   transform: translateX(-50%);
-/*   margin: auto; */
   aspect-ratio: 7 / 9;
-/*   outline: 1px solid white; */
-/*   background-image: url("background.png"); */
   background-size: contain;
   background-repeat: no-repeat;
   overflow: hidden;
@@ -100,23 +90,12 @@ main {
 /*  top-left-most grid position = translate(calc(100cqw / 56),calc(700cqh / 72))  */
 }
 @media (max-aspect-ratio: 7/9) {
-  body {
-/*     overflow: hidden; */
-  }
   main {
     top: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
     height: initial;
 /*     padding-top: calc(50vh - calc(128.5714vw / 2)); */
-  }
-  svg.map {
-/*     height: 100%; */
-/*     height: calc(100% - calc(50vh - calc(128.5714vw / 2))); */
-  }
-  .test {
-    top: calc(50vh - calc(128.5714vw / 2));
-    height: calc(100% - calc(50vh - calc(128.5714vw / 2)));
   }
 }
 
