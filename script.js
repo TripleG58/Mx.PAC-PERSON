@@ -1,6 +1,6 @@
-// THIS IS GLITCH'S BRANCH //
+     // THIS IS GLITCH'S BRANCH //
 
-// HELPER METHODS // 
+// GLITCHY HELPER METHODS // 
 // Shorten querySelector
 // usage: elem.querySelector(param) => qs(elem, param);
 function qs(elem, param) { return elem.querySelector(param); }
@@ -269,7 +269,18 @@ pac.onanimationend = async e => {
   }
   animCounter++;
 };
-
+      // Add an event listener to the document to listen for the space bar key
+      document.addEventListener("keydown", function(event) {
+        // Check if the key pressed is the space bar
+        if (event.code === "Space") {
+          // Toggle the value of the animation-play-state property
+          if (pac.style.animationPlayState === "paused") {
+            pac.style.animationPlayState = "running";
+          } else {
+            pac.style.animationPlayState = "paused";
+          }
+        }
+      });
 
 
 // begin static demo animations //
