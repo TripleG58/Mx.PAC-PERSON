@@ -1,6 +1,4 @@
-     // THIS IS GLITCH'S BRANCH //
-
-// GLITCHY HELPER METHODS // 
+// HELPER METHODS // 
 // Shorten querySelector
 // usage: elem.querySelector(param) => qs(elem, param);
 function qs(elem, param) { return elem.querySelector(param); }
@@ -229,6 +227,7 @@ async function pacDetectWallCollision(xi, yi, s, d) {
   // await sleep(1);
   // document.querySelector('.pac').classList.remove('resetAnimation');
   document.querySelector('.pac').offsetHeight; // trigger reflow after changing animation
+  
   document.querySelector('.pac').style.animationName = "";
   document.querySelector('.pac').style.animationDuration = "";
 }
@@ -269,21 +268,53 @@ pac.onanimationend = async e => {
   }
   animCounter++;
 };
-      // Add an event listener to the document to listen for the space bar key
-      document.addEventListener("keydown", function(event) {
-        // Check if the key pressed is the space bar
-        if (event.code === "Space") {
-          // Toggle the value of the animation-play-state property
-          if (pac.style.animationPlayState === "paused") {
-            pac.style.animationPlayState = "running";
-          } else {
-            pac.style.animationPlayState = "paused";
-          }
-        }
-      });
-
 
 // begin static demo animations //
 pacDetectWallCollision(26, 51, 12.5, 'W');
 
 // FIXME: figure out how to stop animation mid-way
+// algorithm:
+// pause both animation on '.pac' and '.pac > svg > path'
+// -- path animation should only need to be paused when pac hits a wall/ghost
+// 
+
+
+// @param dir = case-insensitive char enum: 'N', 'S', 'E', 'W'
+function changePacDirection(dir) {
+  dir = dir.toUpperCase();
+  
+  switch(dir) {
+    case 'N':
+      
+      break;
+    case 'S':
+      
+      break;
+    case 'E':
+      
+      break;
+    case 'W':
+      
+      break;
+    default:
+      break;
+  }
+}
+
+
+// Add an event listener to the document to listen for the space bar key
+document.addEventListener("keydown", function(event) {
+  // Check if the key pressed is the space bar
+  if (event.code === "Space") {
+    // Toggle the value of the animation-play-state property
+    if (pac.style.animationPlayState === "paused") {
+      pac.style.animationPlayState = "running";
+    } else {
+      pac.style.animationPlayState = "paused";
+    }
+  }
+});
+
+
+
+
